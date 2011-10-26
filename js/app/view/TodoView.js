@@ -10,21 +10,20 @@ Ext.define('TodoMVC.view.TodoView', {
         alias: 'widget.todopanel',
         title: 'TodoMVC',
         
-        layout: 'border',
+        layout: 'fit',
         items: [
-            {   xtype: 'component',
-                region: 'west',
-                html: 'tetsestew',
-                split: true
-            },
+
             {
                 xtype: 'panel',
+                border: false,
                 region: 'center',
                 maxSize: 520,
                 width: 520,
+                split: true,
                 dockedItems: [
                 {
                         xtype: 'toolbar',
+                        width: 520,
                         dock: 'bottom',
                         hidden: false,
                         items: [
@@ -40,12 +39,17 @@ Ext.define('TodoMVC.view.TodoView', {
                     }
                 ],
                 items: [{
+                        width: 520,
                         xtype: 'box',
-                        html: '<H1>Todos</H1>'
+                        html: '<H1>Todos</H1>',
+                        padding: '10 10 10 10'
                     },
                     {
+                        width: 520,
                         xtype: 'panel',
                         layout: 'hbox',
+                        padding: '10 10 10 10',
+                        border: false,
                         items: [{
                                 xtype: 'textfield',
                                 itemId: 'newTodoText',
@@ -54,13 +58,15 @@ Ext.define('TodoMVC.view.TodoView', {
                             {
                                 xtype: 'button',
                                 text: 'Add',
-                                action: 'add'
+                                action: 'add',
+                                margin: '0 0 0 5'
                             }
 
                         ]
                     },
                     {
                         xtype: 'gridpanel',
+                        width: 520,
                         hideHeaders: true,
                         store: 'TodoStore',
                         selModel: Ext.create('Ext.selection.CheckboxModel'),
@@ -71,9 +77,7 @@ Ext.define('TodoMVC.view.TodoView', {
                     }
                 ]
 
-            },
-            {   xtype: 'component',
-                region: 'east'}
+            } 
         
         ]
 

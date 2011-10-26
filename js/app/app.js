@@ -4,10 +4,24 @@ Ext.onReady(function(){
 
 Ext.application({
     name: 'TodoMVC',
-    autoCreateViewport: true,
+    autoCreateViewport: false, //no viewport now
     appFolder: './js/app',
+    requires: [
+        'TodoMVC.view.TodoView'
+
+    ],
 
 /*    models: ['TodoModel'],
     stores: ['TodoStore'],*/
-    controllers: ['TodoCtrl']
+    controllers: ['TodoCtrl'],
+    launch: function(){
+        console.log('launch is done');
+
+
+        Ext.create('TodoMVC.view.TodoView', {
+            renderTo: 'mainPartDiv',
+            layout: 'fit'
+        })
+    }
+
 });
