@@ -66,6 +66,7 @@ Ext.define('TodoMVC.view.TodoView', {
                     },
                     {
                         xtype: 'gridpanel',
+                        border: false,
                         width: 520,
                         hideHeaders: true,
                         store: 'TodoStore',
