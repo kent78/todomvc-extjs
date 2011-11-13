@@ -16,9 +16,22 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
             'TodoView'
         ],
 
-        refs: [{
+        refs: [
+            {
                 ref: 'newTodoText',
                 selector: '#newTodoText'
+            },
+            {
+                ref: 'deleteChecked',
+                selector: '#deleteChecked'
+            },
+            {
+                ref: 'todoGrid',
+                selector: '#todoGrid'
+            },
+            {
+                ref: 'itemsLeft',
+                selector: '#itemsLeft'
             }
         ],
 
@@ -27,8 +40,45 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
                 'button[action=add]': {
                     click: this.addTodo
                 },
+                'button[action=deleteChecked]': {
+                    click: this.deleteChecked
+                },
                 '#newTodoText': {
                     specialkey: this.onSpecialKey
+                },
+                '#todoGrid': {
+                    afterrender: {
+                        fn: function (cmp, options) {
+                            var selModel = cmp.getSelectionModel();
+                            selModel.on(
+                               'selectionchange', function ( model, records, eOpts ) {
+                                    //Show/hide and set text of delete button
+                                    var s = '',
+                                        btn = this.getDeleteChecked(),
+                                        itemsLeftText = this.getItemsLeft(),
+                                        store = this.getTodoStoreStore(),
+                                        storeCount = store.getCount(),
+                                        rlen = records.length;
+
+                                    if ( rlen > 1) {
+                                        s = 's';
+                                    }
+                                    if(storeCount > 0){
+                                        itemsLeftText.setText( TodoMVC.itemsLeftTpl.applyTemplate([(storeCount-rlen), s]) );
+                                        itemsLeftText.show();
+                                    } else {
+                                        itemsLeftText.hide();
+                                    }
+                                    if (rlen > 0 ){
+                                        btn.setText( TodoMVC.delBtnTpl.applyTemplate([rlen, s]) );
+                                        btn.show();
+                                    } else {
+                                        btn.hide();
+                                    }
+                               }, this);
+
+                        }
+                    }
                 }
             })
         },
@@ -42,12 +92,34 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
         
         addTodo: function() {
             //console.log('Add button clicked, value =' + this.getNewTodoText().value);
-            var todoText = this.getNewTodoText();
-            var store = this.getTodoStoreStore();
+            var todoText = this.getNewTodoText(),
+                store = this.getTodoStoreStore(),
+                s = '',
+                itemsLeftText = this.getItemsLeft(),
+                storeCount = store.getCount(),
+                todoGrid = this.getTodoGrid(),
+                selModel = todoGrid.getSelectionModel(),
+                selection = selModel.getSelection(),
+                rlen = selection.length;
+
+            if ( rlen > 1) {
+                s = 's';
+            }
             if (todoText.value) {
                 store.add({text: todoText.value});
                 todoText.setValue('');
+
+                itemsLeftText.setText( TodoMVC.itemsLeftTpl.applyTemplate([(storeCount+1-rlen), s]) );
+                itemsLeftText.show();
             }
+        },
+
+        deleteChecked: function() {
+            var todoGrid = this.getTodoGrid(),
+                selModel = todoGrid.getSelectionModel(),
+                selection = selModel.getSelection(),
+                store = this.getTodoStoreStore();
+            store.remove(selection);
         }
     }
 );

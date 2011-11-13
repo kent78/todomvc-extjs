@@ -2,6 +2,7 @@ Ext.onReady(function(){
    Ext.Loader.setConfig({enabled: true});
 });
 
+
 Ext.application({
     name: 'TodoMVC',
     autoCreateViewport: false, //no viewport now

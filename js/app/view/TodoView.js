@@ -4,6 +4,11 @@
  * Date: 10/26/11
  * Time: 11:44 AM
  */
+
+Ext.ns('TodoMVC');
+TodoMVC.itemsLeftTpl = new Ext.Template("{0} item{1} left.");
+TodoMVC.delBtnTpl    = new Ext.Template("Clear {0} completed item{1}");
+
 Ext.define('TodoMVC.view.TodoView', {
         extend: 'Ext.panel.Panel',
         requires: 'TodoMVC.store.TodoStore',
@@ -28,12 +33,19 @@ Ext.define('TodoMVC.view.TodoView', {
                         hidden: false,
                         items: [
                             {
-                                xtype: 'box'
+                                xtype: 'tbtext',
+                                itemId: 'itemsLeft',
+                                text: '0 items left',
+                                hidden: true
                             },
+                            '->',
                             {
                                 xtype: 'button',
-                                text: 'Clear X completed items',
-                                hidden: false
+                                text: 'Clear 5 completed item(s)',
+                                hidden: true,
+                                action: 'deleteChecked',
+                                itemId: 'deleteChecked'
+
                             }
                         ]
                     }
@@ -66,11 +78,13 @@ Ext.define('TodoMVC.view.TodoView', {
                     },
                     {
                         xtype: 'gridpanel',
+                        itemId: 'todoGrid',
                         border: false,
                         width: 520,
                         hideHeaders: true,
                         store: 'TodoStore',
                         selModel: Ext.create('Ext.selection.CheckboxModel'),
+
                         columns: [
                             {dataIndex: 'text'},
                             {itemId: 'delColumn'}
