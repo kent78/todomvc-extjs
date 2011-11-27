@@ -10,7 +10,6 @@ Ext.define('TodoMVC.store.TodoStore', {
     /*requires: 'TodoMVC.model.TodoModel',*/
     model: 'TodoMVC.model.TodoModel',
     /*storeId: 'todoStore',*/
-    fields: ['text'],
-    autoload: true
-
+    fields: ['text', 'priority']
+    //The proxy is defined in the model instead of in the store
 });

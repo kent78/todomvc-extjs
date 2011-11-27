@@ -16,8 +16,7 @@ Ext.application({
     stores: ['TodoStore'],*/
     controllers: ['TodoCtrl'],
     launch: function(){
-        console.log('launch is done');
-
+        //console.log('launch is done');
 
         Ext.create('TodoMVC.view.TodoView', {
             renderTo: 'mainPartDiv',

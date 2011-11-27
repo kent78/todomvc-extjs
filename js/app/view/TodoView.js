@@ -5,9 +5,9 @@
  * Time: 11:44 AM
  */
 
-Ext.ns('TodoMVC');
-TodoMVC.itemsLeftTpl = new Ext.Template("{0} item{1} left.");
-TodoMVC.delBtnTpl    = new Ext.Template("Clear {0} completed item{1}");
+Ext.ns('TodoMVCtpl');
+TodoMVCtpl.itemsLeftTpl = new Ext.Template("{0} item{1} left.");
+TodoMVCtpl.delBtnTpl    = new Ext.Template("Clear {0} completed item{1}");
 
 Ext.define('TodoMVC.view.TodoView', {
         extend: 'Ext.panel.Panel',
@@ -79,15 +79,70 @@ Ext.define('TodoMVC.view.TodoView', {
                     {
                         xtype: 'gridpanel',
                         itemId: 'todoGrid',
+                        hidden:true,
                         border: false,
                         width: 520,
-                        hideHeaders: true,
+                        hideHeaders: false,
                         store: 'TodoStore',
-                        selModel: Ext.create('Ext.selection.CheckboxModel'),
+                        
+
+                        plugins: [ Ext.create('Ext.grid.plugin.CellEditing') ],
+                        selModel: Ext.create('Ext.selection.CheckboxModel', {checkOnly: true}),
 
                         columns: [
-                            {dataIndex: 'text'},
-                            {itemId: 'delColumn'}
+                            {
+                                dataIndex: 'text',
+                                text: 'Todo',
+                                field: {
+                                    type:'textfield'
+                                }
+                            },
+
+                            {
+                                dataIndex: 'priority',
+                                text: 'Priority',
+                                field: Ext.create('Ext.form.field.ComboBox', {
+                                    editable: false,
+                                    store: [[1,1], [2,2], [3,3], [4,4], [5,5]]
+                                })
+                            }
+/*
+                            ,{
+                                xtype:'actioncolumn',
+                                width:50,
+                                items: [{
+                                    icon: 'js/extjs/examples/restful/images/delete.png',
+                                    tooltip: 'Delete',
+                                    handler: function(grid, rowIndex, colIndex) {
+                                        var controller = TodoMVC.controller.TodoCtrl;
+                                            //.getController('TodoCtrl');
+                                        console.log(controller);
+                                        var rec = grid.getStore().getAt(rowIndex);
+                                    }
+                                }]
+                            }
+
+                            {
+                                text: '',
+                                renderer: function (value, metaData, record, row, col, store, gridView){
+                                    var id = Ext.id();
+                                    / * Ext.create('Ext.Button', {
+                                        text: 'Click me',
+                                        renderTo: Ext.getBody(),
+                                        handler: function() {
+                                            alert('You clicked the button!')
+                                        }
+                                    });  * /
+                                    return('<div id="' + id + '"></div>');
+
+                                }
+
+                            }
+
+                            TODO: make a hidden floating toolbar with a delete button. move it on mouseover on rows to right top/left position. 
+                            Register which record user is currently hovering on and delete this one if button clicked. IE one button and easy to refer to it from controller
+*/
+                            
                         ]
                     }
                 ]

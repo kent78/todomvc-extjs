@@ -46,10 +46,20 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
                 '#newTodoText': {
                     specialkey: this.onSpecialKey
                 },
+
+
+
                 '#todoGrid': {
                     afterrender: {
                         fn: function (cmp, options) {
-                            var selModel = cmp.getSelectionModel();
+
+
+                            var selModel = cmp.getSelectionModel(),
+                            store = this.getTodoStoreStore();
+                            if (store.getCount() > 0 ) {
+                                cmp.show();
+                            }
+
                             selModel.on(
                                'selectionchange', function ( model, records, eOpts ) {
                                     //Show/hide and set text of delete button
@@ -64,13 +74,13 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
                                         s = 's';
                                     }
                                     if(storeCount > 0){
-                                        itemsLeftText.setText( TodoMVC.itemsLeftTpl.applyTemplate([(storeCount-rlen), s]) );
+                                        itemsLeftText.setText( TodoMVCtpl.itemsLeftTpl.applyTemplate([(storeCount-rlen), s]) );
                                         itemsLeftText.show();
                                     } else {
                                         itemsLeftText.hide();
                                     }
                                     if (rlen > 0 ){
-                                        btn.setText( TodoMVC.delBtnTpl.applyTemplate([rlen, s]) );
+                                        btn.setText( TodoMVCtpl.delBtnTpl.applyTemplate([rlen, s]) );
                                         btn.show();
                                     } else {
                                         btn.hide();
@@ -78,9 +88,18 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
                                }, this);
 
                         }
+                    },
+                    edit: {
+                        fn: function(editor, e) {
+                            // commit the changes right after editing finished
+                            e.grid.getStore().sync();
+                            e.record.commit();
+                        }
                     }
                 }
-            })
+            });
+            //load the store
+            this.getTodoStoreStore().load();
         },
 
         onSpecialKey: function(field, e) {
@@ -102,14 +121,18 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
                 selection = selModel.getSelection(),
                 rlen = selection.length;
 
+            //Show the grid, hidden from start
+            todoGrid.show();
+
             if ( rlen > 1) {
                 s = 's';
             }
             if (todoText.value) {
-                store.add({text: todoText.value});
+                store.add({text: todoText.value, priority: 1});
+                store.sync();
                 todoText.setValue('');
 
-                itemsLeftText.setText( TodoMVC.itemsLeftTpl.applyTemplate([(storeCount+1-rlen), s]) );
+                itemsLeftText.setText( TodoMVCtpl.itemsLeftTpl.applyTemplate([(storeCount+1-rlen), s]) );
                 itemsLeftText.show();
             }
         },
@@ -118,8 +141,16 @@ Ext.define('TodoMVC.controller.TodoCtrl', {
             var todoGrid = this.getTodoGrid(),
                 selModel = todoGrid.getSelectionModel(),
                 selection = selModel.getSelection(),
-                store = this.getTodoStoreStore();
+                store = this.getTodoStoreStore(),
+                length = selection.length,
+                i;
             store.remove(selection);
+            store.sync();
+        },
+        deleteCurrent: function(grid, rowIndex, colIndex) {
+
+                                    //    var rec = grid.getStore().getAt(rowIndex);
+                                    console.log('delete!!')
         }
     }
 );
